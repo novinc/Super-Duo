@@ -1,13 +1,16 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -19,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import java.util.ArrayList;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -36,7 +41,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
-
+    private boolean showingBook = false;
+    private BroadcastReceiver receiver;
+    private String showingEan;
 
 
     public AddBook(){
@@ -45,9 +52,57 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(ean!=null) {
+        if (showingEan != null) {
+            outState.putString(EAN_CONTENT, showingEan);
+        } else if(ean!=null) {
             outState.putString(EAN_CONTENT, ean.getText().toString());
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (BookService.SHOW_BOOK.equals(intent.getAction())) {
+                    showingEan = intent.getStringExtra(AlexandriaContract.BookEntry._ID);
+                    ((TextView) getView().findViewById(R.id.bookTitle)).setText(intent.getStringExtra(AlexandriaContract.BookEntry.TITLE));
+                    DownloadImage downloadImage = new DownloadImage(((ImageView) getView().findViewById(R.id.bookCover)));
+                    downloadImage.execute(intent.getStringExtra(AlexandriaContract.BookEntry.IMAGE_URL));
+                    getView().findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
+                    ((TextView) getView().findViewById(R.id.bookSubTitle)).setText(intent.getStringExtra(AlexandriaContract.BookEntry.SUBTITLE));
+                    getView().findViewById(R.id.save_button).setVisibility(View.VISIBLE);
+                    getView().findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
+                } else if (BookService.SHOW_AUTHORS.equals(intent.getAction())) {
+                    ArrayList<String> authorsList = intent.getStringArrayListExtra(AlexandriaContract.AuthorEntry.AUTHOR);
+                    ((TextView) getView().findViewById(R.id.authors)).setLines(authorsList.size());
+                    String authors = "";
+                    for (String s : authorsList) {
+                        authors += s + "\n";
+                    }
+                    ((TextView) getView().findViewById(R.id.authors)).setText(authors);
+                } else if (BookService.SHOW_CATEGORIES.equals(intent.getAction())) {
+                    ArrayList<String> categoriesList = intent.getStringArrayListExtra(AlexandriaContract.CategoryEntry.CATEGORY);
+                    String categories = "";
+                    for (String s : categoriesList) {
+                        categories += s + ", ";
+                    }
+                    categories = categories.substring(0, categories.length() - 2);
+                    ((TextView) getView().findViewById(R.id.categories)).setText(categories);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BookService.SHOW_BOOK);
+        filter.addAction(BookService.SHOW_AUTHORS);
+        filter.addAction(BookService.SHOW_CATEGORIES);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
     }
 
     @Override
@@ -75,15 +130,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     ean="978"+ean;
                 }
                 if(ean.length()<13){
-                    clearFields();
+                    if (!showingBook) {
+                        clearFields();
+                    }
                     return;
                 }
                 //Once we have an ISBN, start a book intent
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
+                bookIntent.setAction(BookService.GET_BOOK);
                 getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                //AddBook.this.restartLoader();
+                showingBook = true;
             }
         });
 
@@ -109,18 +167,20 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                bookIntent.putExtra(BookService.EAN, showingEan);
+                bookIntent.setAction(BookService.FETCH_BOOK);
+                getActivity().startService(bookIntent);
                 ean.setText("");
+                clearFields();
             }
         });
 
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
                 ean.setText("");
+                clearFields();
             }
         });
 
@@ -203,5 +263,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         activity.setTitle(R.string.scan);
+    }
+
+    @Override
+    public void onStop() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        super.onStop();
     }
 }
