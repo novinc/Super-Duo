@@ -22,12 +22,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -68,8 +68,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 if (BookService.SHOW_BOOK.equals(intent.getAction())) {
                     showingEan = intent.getStringExtra(AlexandriaContract.BookEntry._ID);
                     ((TextView) getView().findViewById(R.id.bookTitle)).setText(intent.getStringExtra(AlexandriaContract.BookEntry.TITLE));
-                    DownloadImage downloadImage = new DownloadImage(((ImageView) getView().findViewById(R.id.bookCover)));
-                    downloadImage.execute(intent.getStringExtra(AlexandriaContract.BookEntry.IMAGE_URL));
+                    //DownloadImage downloadImage = new DownloadImage(((ImageView) getView().findViewById(R.id.bookCover)));
+                    //downloadImage.execute(intent.getStringExtra(AlexandriaContract.BookEntry.IMAGE_URL));
+                    Picasso.with(getActivity()).load(intent.getStringExtra(AlexandriaContract.BookEntry.IMAGE_URL))
+                            .into((ImageView) getView().findViewById(R.id.bookCover));
                     getView().findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
                     ((TextView) getView().findViewById(R.id.bookSubTitle)).setText(intent.getStringExtra(AlexandriaContract.BookEntry.SUBTITLE));
                     getView().findViewById(R.id.save_button).setVisibility(View.VISIBLE);
@@ -233,7 +235,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
+            //new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
+            Picasso.with(getActivity()).load(imgUrl).into((ImageView) rootView.findViewById(R.id.bookCover));
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         }
 

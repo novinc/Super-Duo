@@ -64,25 +64,28 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void onNavigationDrawerItemSelected(int position) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        String tag;
         Fragment nextFragment;
 
         switch (position){
             default:
             case 0:
                 nextFragment = new ListOfBooks();
+                tag = "books";
                 break;
             case 1:
                 nextFragment = new AddBook();
+                tag = "add";
                 break;
             case 2:
                 nextFragment = new About();
+                tag = "about";
                 break;
 
         }
 
         fragmentManager.beginTransaction()
-                .replace(R.id.container, nextFragment)
-                .addToBackStack((String) title)
+                .replace(R.id.container, nextFragment, tag)
                 .commit();
     }
 
@@ -145,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             id = R.id.right_container;
         }
         getSupportFragmentManager().beginTransaction()
-                .replace(id, fragment)
+                .replace(id, fragment, "bookDetail")
                 .addToBackStack("Book Detail")
                 .commit();
 
@@ -172,10 +175,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
+        ListOfBooks fragment = (ListOfBooks) getSupportFragmentManager().findFragmentByTag("books");
+        if(fragment == null || !fragment.isVisible()){
+            NavigationDrawerFragment fragment1 = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+            fragment1.selectItem(0);
+        } else {
             finish();
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
 
