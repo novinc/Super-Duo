@@ -182,6 +182,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 getActivity().startService(bookIntent);
                 ean.setText("");
                 clearFields();
+                Toast.makeText(getActivity(), R.string.book_added_toast, Toast.LENGTH_SHORT).show();
             }
         });
 

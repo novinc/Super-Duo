@@ -1,5 +1,8 @@
 package it.jaschke.alexandria;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -57,11 +60,27 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
-                getActivity().getSupportFragmentManager().popBackStack();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                builder.setMessage(R.string.delete_confirm);
+                builder.setCancelable(true);
+                builder.setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent bookIntent = new Intent(getActivity(), BookService.class);
+                        bookIntent.putExtra(BookService.EAN, ean);
+                        bookIntent.setAction(BookService.DELETE_BOOK);
+                        getActivity().startService(bookIntent);
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                });
+                builder.setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
+
             }
         });
         rootView.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
