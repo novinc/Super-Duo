@@ -6,6 +6,7 @@
     <string name="books">List of Books</string>
     <string name="scan">Scan/Add a Book</string>
     <string name="about">About this App</string>
+    <string name="book_details">Book Details</string>
 
     <string name="navigation_drawer_open" >Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -14,7 +15,7 @@
     <string name="input_hint">Insert ISBN-13. Digits only.</string>
     <string name="book_cover">Bookcover</string>
 
-    <string name="ok_button">Next</string>
+    <string name="ok_button">Add</string>
     <string name="cancel_button">Cancel</string>
     <string name="not_found">No Book found</string>
     <string name="search">Search</string>
@@ -24,6 +25,9 @@
     <string name="action_share">Share</string>
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
+
+    <string name="no_connection_msg">Could not get book data, check your connection</string>
+    <string name="duplicate_book_msg">Book is already in your library</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.

@@ -108,7 +108,7 @@ public class BookService extends IntentService {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "Book is already in your library", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.duplicate_book_msg, Toast.LENGTH_SHORT).show();
                 }
             });
             return;
@@ -189,7 +189,7 @@ public class BookService extends IntentService {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Could not get book data, check your connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.no_connection_msg, Toast.LENGTH_SHORT).show();
                     }
                 });
                 return;
@@ -335,7 +335,7 @@ public class BookService extends IntentService {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Could not get book data, check your connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.no_connection_msg, Toast.LENGTH_SHORT).show();
                     }
                 });
                 return;

@@ -66,12 +66,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag;
         Fragment nextFragment;
+        boolean goingToMain = false;
 
         switch (position){
             default:
             case 0:
                 nextFragment = new ListOfBooks();
                 tag = "books";
+                goingToMain = true;
                 break;
             case 1:
                 nextFragment = new AddBook();
@@ -83,8 +85,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 break;
 
         }
+        if (goingToMain) {
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                    .replace(R.id.container, nextFragment, tag)
+                    .commit();
+            return;
+        }
 
         fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out)
                 .replace(R.id.container, nextFragment, tag)
                 .commit();
     }
@@ -148,10 +158,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             id = R.id.right_container;
         }
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top)
                 .replace(id, fragment, "bookDetail")
                 .addToBackStack("Book Detail")
                 .commit();
-
+        setTitle(R.string.book_details);
+        restoreActionBar();
     }
 
     private class MessageReciever extends BroadcastReceiver {
