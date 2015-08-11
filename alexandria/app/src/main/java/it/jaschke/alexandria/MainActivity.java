@@ -179,6 +179,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if(fragment == null || !fragment.isVisible()){
             NavigationDrawerFragment fragment1 = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
             fragment1.selectItem(0);
+            getSupportActionBar().setTitle(R.string.books);
         } else {
             finish();
             super.onBackPressed();

@@ -2,6 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="it.jaschke.alexandria.AddBook">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
