@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:elevation="4dp"
     android:background="@drawable/list_item"
     >
@@ -16,7 +17,6 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <ImageView
-                android:contentDescription="@string/home_team_crest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -64,7 +64,6 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <ImageView
-                android:contentDescription="@string/away_team_crest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
