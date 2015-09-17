@@ -54,8 +54,13 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 ViewHolder selected = (ViewHolder) view.getTag();
-                mAdapter.detail_match_id = selected.match_id;
-                MainActivity.selected_match_id = (int) selected.match_id;
+                if (selected.match_id != mAdapter.detail_match_id) {
+                    mAdapter.detail_match_id = selected.match_id;
+                    MainActivity.selected_match_id = (int) selected.match_id;
+                } else {
+                    mAdapter.detail_match_id = 0;
+                    MainActivity.selected_match_id = 0;
+                }
                 mAdapter.notifyDataSetChanged();
             }
         });
