@@ -1,5 +1,10 @@
 package barqsoft.footballscores;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
@@ -97,5 +102,17 @@ public class Utilities
             case "Stoke City FC" : return R.drawable.stoke_city;
             default: return R.drawable.no_icon;
         }
+    }
+    public static String getTeamCrestUrl(String team, String crestsJson) {
+        String url = "";
+        try {
+            JSONObject object = new JSONObject(crestsJson);
+            team = team.replace(" ", "");
+            team = team.replace(".", "");
+            url = object.getString(team);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 }

@@ -14,4 +14,7 @@
             <corners android:radius="0dp"/>
         </shape>
     </item>
+    <item>
+        <bitmap android:src="@drawable/footballgoals" android:alpha="150"/>
+    </item>
 </layer-list>

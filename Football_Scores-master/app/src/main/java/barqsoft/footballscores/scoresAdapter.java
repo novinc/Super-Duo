@@ -3,18 +3,34 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.PictureDrawable;
+import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.GenericRequestBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.StreamEncoder;
+import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
+import com.caverock.androidsvg.SVG;
+
+import java.io.InputStream;
+
+import barqsoft.footballscores.SVG.SvgDecoder;
+import barqsoft.footballscores.SVG.SvgDrawableTranscoder;
+
 /**
  * Created by yehya khaled on 2/26/2015.
  */
 public class scoresAdapter extends CursorAdapter
 {
+    GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
     public static final int COL_HOME = 3;
     public static final int COL_AWAY = 4;
     public static final int COL_HOME_GOALS = 6;
@@ -29,6 +45,16 @@ public class scoresAdapter extends CursorAdapter
     public scoresAdapter(Context context,Cursor cursor,int flags)
     {
         super(context,cursor,flags);
+        requestBuilder = Glide.with(context)
+                .using(Glide.buildStreamModelLoader(Uri.class, context), InputStream.class)
+                .from(Uri.class)
+                .as(SVG.class)
+                .transcode(new SvgDrawableTranscoder(), PictureDrawable.class)
+                .sourceEncoder(new StreamEncoder())
+                .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
+                .decoder(new SvgDecoder())
+                .placeholder(R.drawable.no_icon)
+                .error(R.drawable.no_icon);
     }
 
     @Override
@@ -53,11 +79,37 @@ public class scoresAdapter extends CursorAdapter
             mHolder.score.setContentDescription("no score");
         }
         mHolder.match_id = cursor.getDouble(COL_ID);
-        mHolder.home_crest.setImageResource(Utilities.getTeamCrestByTeamName(
-                cursor.getString(COL_HOME)));
-        mHolder.away_crest.setImageResource(Utilities.getTeamCrestByTeamName(
-                cursor.getString(COL_AWAY)
-        ));
+        int homeCrest = Utilities.getTeamCrestByTeamName(
+                cursor.getString(COL_HOME));
+        if (homeCrest != R.drawable.no_icon) {
+            mHolder.home_crest.setImageResource(homeCrest);
+        } else {
+            mHolder.home_crest.setImageResource(R.drawable.no_icon);
+            String url = Utilities.getTeamCrestUrl(cursor.getString(COL_HOME), context.getString(R.string.crestJson));
+            if (!"".equals(url)) {
+                Uri uri = Uri.parse(url);
+                requestBuilder
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .load(uri)
+                        .into(mHolder.home_crest);
+            }
+        }
+        int awayCrest = Utilities.getTeamCrestByTeamName(
+                cursor.getString(COL_AWAY));
+        if (awayCrest != R.drawable.no_icon) {
+            mHolder.away_crest.setImageResource(awayCrest);
+        } else {
+            mHolder.away_crest.setImageResource(R.drawable.no_icon);
+            String url = Utilities.getTeamCrestUrl(cursor.getString(COL_AWAY), context.getString(R.string.crestJson));
+            if (!"".equals(url)) {
+                Uri uri = Uri.parse(url);
+                requestBuilder
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                // SVG cannot be serialized so it's not worth to cache it
+                        .load(uri)
+                        .into(mHolder.away_crest);
+            }
+        }
         mHolder.home_crest.setContentDescription(mHolder.home_name.getText() + " crest");
         mHolder.away_crest.setContentDescription(mHolder.away_name.getText() + " crest");
         //Log.v(FetchScoreTask.LOG_TAG,mHolder.home_name.getText() + " Vs. " + mHolder.away_name.getText() +" id " + String.valueOf(mHolder.match_id));
@@ -80,11 +132,10 @@ public class scoresAdapter extends CursorAdapter
             Button share_button = (Button) v.findViewById(R.id.share_button);
             share_button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     //add Share Action
-                    context.startActivity(createShareForecastIntent(mHolder.home_name.getText()+" "
-                    +mHolder.score.getText()+" "+mHolder.away_name.getText() + " "));
+                    context.startActivity(createShareForecastIntent(mHolder.home_name.getText() + " "
+                            + mHolder.score.getText() + " " + mHolder.away_name.getText() + " "));
                 }
             });
         }

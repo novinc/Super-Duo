@@ -17,8 +17,9 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layerType="software"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:focusable="true"
                 android:layout_gravity="center"
                 android:id="@+id/home_crest"/>
@@ -68,8 +69,9 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layerType="software"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:focusable="true"
                 android:layout_gravity="center"
                 android:id="@+id/away_crest"/>
