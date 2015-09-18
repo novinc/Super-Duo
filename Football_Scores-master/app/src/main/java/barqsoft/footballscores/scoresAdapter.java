@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
+import android.os.*;
+import android.os.Process;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +34,7 @@ import barqsoft.footballscores.SVG.SvgDrawableTranscoder;
 public class scoresAdapter extends CursorAdapter
 {
     GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
+    Handler mHandler;
     public static final int COL_HOME = 3;
     public static final int COL_AWAY = 4;
     public static final int COL_HOME_GOALS = 6;
@@ -53,8 +57,12 @@ public class scoresAdapter extends CursorAdapter
                 .sourceEncoder(new StreamEncoder())
                 .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
                 .decoder(new SvgDecoder())
-                .placeholder(R.drawable.no_icon)
+                .animate(android.R.anim.fade_in)
                 .error(R.drawable.no_icon);
+        HandlerThread thread = new HandlerThread("imageloader", Process.THREAD_PRIORITY_LESS_FAVORABLE);
+        thread.setDaemon(true);
+        thread.start();
+        mHandler = new Handler(thread.getLooper());
     }
 
     @Override
@@ -71,10 +79,17 @@ public class scoresAdapter extends CursorAdapter
     public void bindView(View view, final Context context, Cursor cursor)
     {
         final ViewHolder mHolder = (ViewHolder) view.getTag();
+        final String crestJson = context.getString(R.string.crestJson);
         mHolder.home_name.setText(cursor.getString(COL_HOME));
         mHolder.away_name.setText(cursor.getString(COL_AWAY));
         mHolder.date.setText(cursor.getString(COL_MATCHTIME));
-        mHolder.score.setText(Utilities.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+        mHolder.home_crest.setImageDrawable(null);
+        mHolder.away_crest.setImageDrawable(null);
+        if (ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+            mHolder.score.setText(Utilities.getScores(cursor.getInt(COL_AWAY_GOALS), cursor.getInt(COL_HOME_GOALS)));
+        } else {
+            mHolder.score.setText(Utilities.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+        }
         if (mHolder.score.getText() == " - ") {
             mHolder.score.setContentDescription("no score");
         }
@@ -84,31 +99,56 @@ public class scoresAdapter extends CursorAdapter
         if (homeCrest != R.drawable.no_icon) {
             mHolder.home_crest.setImageResource(homeCrest);
         } else {
-            mHolder.home_crest.setImageResource(R.drawable.no_icon);
-            String url = Utilities.getTeamCrestUrl(cursor.getString(COL_HOME), context.getString(R.string.crestJson));
-            if (!"".equals(url)) {
-                Uri uri = Uri.parse(url);
-                requestBuilder
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .load(uri)
-                        .into(mHolder.home_crest);
-            }
+            final String homeTeam = cursor.getString(COL_HOME);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final String url = Utilities.getTeamCrestUrl(homeTeam, crestJson);
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!"".equals(url)) {
+                                Uri uri = Uri.parse(url);
+                                requestBuilder
+                                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                        .load(uri)
+                                        .into(mHolder.home_crest);
+                            } else {
+                                mHolder.home_crest.setImageResource(R.drawable.no_icon);
+                            }
+                        }
+                    });
+                }
+            });
         }
         int awayCrest = Utilities.getTeamCrestByTeamName(
                 cursor.getString(COL_AWAY));
         if (awayCrest != R.drawable.no_icon) {
             mHolder.away_crest.setImageResource(awayCrest);
         } else {
-            mHolder.away_crest.setImageResource(R.drawable.no_icon);
-            String url = Utilities.getTeamCrestUrl(cursor.getString(COL_AWAY), context.getString(R.string.crestJson));
-            if (!"".equals(url)) {
-                Uri uri = Uri.parse(url);
-                requestBuilder
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                // SVG cannot be serialized so it's not worth to cache it
-                        .load(uri)
-                        .into(mHolder.away_crest);
-            }
+            final String awayTeam = cursor.getString(COL_AWAY);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final String url = Utilities.getTeamCrestUrl(awayTeam, crestJson);
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!"".equals(url)) {
+                                Uri uri = Uri.parse(url);
+                                requestBuilder
+                                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                        .load(uri)
+                                        .into(mHolder.away_crest);
+                            } else{
+                                mHolder.away_crest.setImageResource(R.drawable.no_icon);
+                            }
+                        }
+                    });
+                }
+            });
         }
         mHolder.home_crest.setContentDescription(mHolder.home_name.getText() + " crest");
         mHolder.away_crest.setContentDescription(mHolder.away_name.getText() + " crest");
