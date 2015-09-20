@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="internalOnly"
     package="barqsoft.footballscores" >
 
     <uses-permission
@@ -11,7 +13,14 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        tools:ignore="UnusedAttribute">
+        <receiver android:name="ScoreWidgetProvider" android:icon="@drawable/no_icon" android:label="Score Widget" android:enabled="true" android:logo="@drawable/ic_launcher">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.AppWidgetProvider" android:resource="@xml/score_widget_info" />
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
