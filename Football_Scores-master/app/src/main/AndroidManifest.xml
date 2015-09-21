@@ -7,6 +7,7 @@
     <uses-permission
         android:name="android.permission.INTERNET"
         android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -15,11 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
-        <receiver android:name="ScoreWidgetProvider" android:icon="@drawable/no_icon" android:label="Score Widget" android:enabled="true" android:logo="@drawable/ic_launcher">
+        <receiver android:name="barqsoft.footballscores.ScoreWidgetProvider" android:exported="true" android:icon="@drawable/no_icon" android:label="Score Widget" android:enabled="true" android:logo="@drawable/ic_launcher">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.AppWidgetProvider" android:resource="@xml/score_widget_info" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/score_widget_info" />
         </receiver>
         <activity
             android:name=".MainActivity"
