@@ -2,25 +2,17 @@ package barqsoft.footballscores;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PictureDrawable;
 import android.util.Log;
 
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.caverock.androidsvg.SVG;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -143,17 +135,14 @@ public class Utilities
         canvas.drawPicture(picture, new Rect(0, 0, width, height));
         //canvas.drawRGB(255, 0, 0);
         //svg.renderToCanvas(canvas, new RectF(0, 0, width, height));
-        Log.v("Utils", " " + "about to make file");
         try {
             File file = new File("sdcard/Pictures/test.png");
             boolean b = file.createNewFile();
             OutputStream outputStream = new FileOutputStream(file);
             b = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            Log.v("Utils", " " + b);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.v("Utils", "" + bitmap.getWidth() + " " + bitmap.getHeight() + " " + bitmap.getAllocationByteCount());
         return bitmap;
     }
 }

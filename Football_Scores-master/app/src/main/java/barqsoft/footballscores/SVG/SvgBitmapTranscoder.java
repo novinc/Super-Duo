@@ -3,7 +3,6 @@ package barqsoft.footballscores.SVG;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.SimpleResource;

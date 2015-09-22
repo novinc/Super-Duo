@@ -9,45 +9,24 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.StreamEncoder;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
 import com.caverock.androidsvg.SVG;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import barqsoft.footballscores.SVG.SvgBitmapTranscoder;
 import barqsoft.footballscores.SVG.SvgDecoder;
-import barqsoft.footballscores.SVG.SvgDrawableTranscoder;
 
 /**
  * Created by ncnov on 9/19/2015.
@@ -104,7 +83,6 @@ public class ScoreWidgetProvider extends AppWidgetProvider {
                                                 public void run() {
                                                     remoteViews.setImageViewBitmap(R.id.home_crest, bitmap);
                                                     appWidgetManager.updateAppWidget(id, remoteViews);
-                                                    Log.v("MainThread", "set home crest");
                                                 }
                                             });
                                         } catch (Exception e) {
@@ -146,11 +124,9 @@ public class ScoreWidgetProvider extends AppWidgetProvider {
                                                 public void run() {
                                                     remoteViews.setImageViewBitmap(R.id.away_crest, bitmap);
                                                     appWidgetManager.updateAppWidget(id, remoteViews);
-                                                    Log.v("MainThread", "set away crest");
                                                 }
                                             });
                                         } catch (Exception e) {
-                                            Log.v("DownloadThread", "exception");
                                             e.printStackTrace();
                                         }
                                     }

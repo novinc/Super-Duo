@@ -9,7 +9,6 @@ import android.os.*;
 import android.os.Process;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,8 @@ import barqsoft.footballscores.SVG.SvgDrawableTranscoder;
 /**
  * Created by yehya khaled on 2/26/2015.
  */
-public class scoresAdapter extends CursorAdapter
+public class scoresAdapter
+        extends CursorAdapter
 {
     GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
     Handler mHandler;
@@ -46,7 +46,7 @@ public class scoresAdapter extends CursorAdapter
     public static final int COL_MATCHTIME = 2;
     public double detail_match_id = 0;
     private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
-    public scoresAdapter(Context context,Cursor cursor,int flags)
+    public scoresAdapter(Context context, Cursor cursor, int flags)
     {
         super(context,cursor,flags);
         requestBuilder = Glide.with(context)
