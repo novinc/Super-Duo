@@ -5,7 +5,7 @@
     android:minWidth="400dp"
     android:minResizeHeight="40dp"
     android:minHeight="75dp"
-    android:updatePeriodMillis="21600000"
+    android:updatePeriodMillis="5400000"
     android:previewImage="@drawable/no_icon"
     android:initialLayout="@layout/score_widget"
     android:resizeMode="horizontal|vertical"

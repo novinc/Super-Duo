@@ -51,7 +51,16 @@ public class ScoreWidgetProvider extends AppWidgetProvider {
                 @Override
                 public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
                     if (data.getCount() > 0) {
-                        data.moveToFirst();
+                        if (!data.moveToFirst()) {
+                            return;
+                        }
+                        while (data.getInt(scoresAdapter.COL_HOME_GOALS) != -1) {
+                            if (!data.isLast()) {
+                                data.moveToNext();
+                            } else {
+                                break;
+                            }
+                        }
                         String homeName = data.getString(scoresAdapter.COL_HOME);
                         String awayName = data.getString(scoresAdapter.COL_AWAY);
                         String score = Utilities.getScores(data.getInt(scoresAdapter.COL_HOME_GOALS), data.getInt(scoresAdapter.COL_AWAY_GOALS));
