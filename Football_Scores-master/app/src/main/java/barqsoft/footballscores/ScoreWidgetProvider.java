@@ -44,9 +44,6 @@ public class ScoreWidgetProvider extends AppWidgetProvider {
             SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
             String[] date2 = {mformat.format(date)};
             CursorLoader loader = new CursorLoader(context, DatabaseContract.scores_table.buildScoreWithDate(), null, null, date2, null);
-            remoteViews.setTextViewText(R.id.home_name, "Home Team");
-            remoteViews.setTextViewText(R.id.away_name, "Away Name");
-            remoteViews.setTextViewText(R.id.score_textview, "0 - 0");
             loader.registerListener(42, new Loader.OnLoadCompleteListener<Cursor>() {
                 @Override
                 public void onLoadComplete(Loader<Cursor> loader, Cursor data) {

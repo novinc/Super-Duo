@@ -35,53 +35,53 @@ public class Utilities
     public static final int EREDIVISIE = 404;
     public static final int CHAMPIONS_LEAGUE = 405;
 
-    public static String getLeague(int league_num)
+    public static String getLeague(Context context, int league_num)
     {
         switch (league_num)
         {
-            case BUNDESLIGA1 : return "1. Bundesliga";
-            case BUNDESLIGA2 : return "2. Bundesliga";
-            case LIGUE1 : return "Ligue 1";
-            case LIGUE2 : return "Ligue 2";
-            case PREMIER_LEAGUE : return "Premier League";
-            case PRIMERA_DIVISION : return "Primera Division";
-            case SEGUNDA_DIVISION : return "Segunda Division";
-            case SERIE_A : return "Serie A";
-            case PRIMEIRA_LIGA : return "Primeira Liga";
-            case BUNDESLIGA3 : return "3. Bundesliga";
-            case EREDIVISIE : return "Eredivisie";
-            case CHAMPIONS_LEAGUE : return "UEFA Champions League";
-            default: return "Not known League Please report";
+            case BUNDESLIGA1 : return context.getString(R.string.Bundesliga1);
+            case BUNDESLIGA2 : return context.getString(R.string.Bundesliga2);
+            case LIGUE1 : return context.getString(R.string.Ligue1);
+            case LIGUE2 : return context.getString(R.string.Ligue2);
+            case PREMIER_LEAGUE : return context.getString(R.string.PremierLeague);
+            case PRIMERA_DIVISION : return context.getString(R.string.PrimeraDivision);
+            case SEGUNDA_DIVISION : return context.getString(R.string.SegundaDivision);
+            case SERIE_A : return context.getString(R.string.SerieA);
+            case PRIMEIRA_LIGA : return context.getString(R.string.PrimeiraLiga);
+            case BUNDESLIGA3 : return context.getString(R.string.Bundesliga3);
+            case EREDIVISIE : return context.getString(R.string.Eredivisie);
+            case CHAMPIONS_LEAGUE : return context.getString(R.string.UEFAChampionsLeague);
+            default: return context.getString(R.string.not_known_league);
         }
     }
-    public static String getMatchDay(int match_day,int league_num)
+    public static String getMatchDay(Context context, int match_day, int league_num)
     {
         if(league_num == CHAMPIONS_LEAGUE)
         {
             if (match_day <= 6)
             {
-                return "Group Stages, Matchday : 6";
+                return context.getString(R.string.matchday_GSM6);
             }
             else if(match_day == 7 || match_day == 8)
             {
-                return "First Knockout round";
+                return context.getString(R.string.matchday_FKR);
             }
             else if(match_day == 9 || match_day == 10)
             {
-                return "QuarterFinal";
+                return context.getString(R.string.matchday_QF);
             }
             else if(match_day == 11 || match_day == 12)
             {
-                return "SemiFinal";
+                return context.getString(R.string.matchday_SF);
             }
             else
             {
-                return "Final";
+                return context.getString(R.string.matchday_F);
             }
         }
         else
         {
-            return "Matchday : " + String.valueOf(match_day);
+            return context.getString(R.string.matchday_MD) + String.valueOf(match_day);
         }
     }
 
@@ -126,23 +126,5 @@ public class Utilities
             Log.v("Utilities", "No image for " + team);
         }
         return url;
-    }
-
-    public static Bitmap getBitmapFromSvg(Context context, SVG svg, int width, int height) {
-        Picture picture = svg.renderToPicture(width, height);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawPicture(picture, new Rect(0, 0, width, height));
-        //canvas.drawRGB(255, 0, 0);
-        //svg.renderToCanvas(canvas, new RectF(0, 0, width, height));
-        try {
-            File file = new File("sdcard/Pictures/test.png");
-            boolean b = file.createNewFile();
-            OutputStream outputStream = new FileOutputStream(file);
-            b = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
     }
 }

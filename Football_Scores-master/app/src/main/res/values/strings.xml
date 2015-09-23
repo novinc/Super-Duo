@@ -18,6 +18,28 @@
     <string name="about">About</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="token">e4a447cd7a3f43ba851ed86542fa8c67</string>
+    <string name="Bundesliga1">1. Bundesliga</string>
+    <string name="Bundesliga2">2. Bundesliga</string>
+    <string name="Ligue1">Ligue 1</string>
+    <string name="Ligue2">Ligue 2</string>
+    <string name="PremierLeague">Premier League</string>
+    <string name="PrimeraDivision">Primera Division</string>
+    <string name="SegundaDivision">Segunda Division</string>
+    <string name="SerieA">Serie A</string>
+    <string name="PrimeiraLiga">Primeira Liga</string>
+    <string name="Bundesliga3">3. Bundesliga</string>
+    <string name="Eredivisie">Eredivisie</string>
+    <string name="UEFAChampionsLeague">UEFA Champions League</string>
+    <string name="not_known_league">Not known League Please report</string>
+    <string name="score_hashtag">#Football_Scores</string>
+    <string name="no_score">no score</string>
+    <string name="crest"> crest</string>
+    <string name="matchday_GSM6">Group Stages, Matchday : 6</string>
+    <string name="matchday_FKR">First Knockout round</string>
+    <string name="matchday_QF">QuarterFinal</string>
+    <string name="matchday_SF">SemiFinal</string>
+    <string name="matchday_F">Final</string>
+    <string name="matchday_MD">Matchday :</string>
     <string name="about_text">
         This Application get Football Matches Score for the Premier League,Seria A,Bundesliga,Primera Division
         and the Uefa Champions League.
@@ -278,4 +300,5 @@
 "DebreceniVSC":\"https://upload.wikimedia.org/wikipedia/de/e/e6/Debreceni_Vasutas_SC.svg\",
 "MaccabiTelAviv":\"https://upload.wikimedia.org/wikipedia/en/f/f8/MTAFC_logo.png\"}
     </string>
+
 </resources>
